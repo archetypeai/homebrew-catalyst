@@ -1,17 +1,17 @@
-class UcortexUedge < Formula
+class CortexEdge < Formula
   desc "Build and run cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.3"
+  version "0.2.0-rc.4"
   license :cannot_represent
 
   if Hardware::CPU.arm?
-    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.3/cortex-darwin-arm64.tar.gz",
+    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.4/cortex-darwin-arm64.tar.gz",
         headers: ["x-api-key: #{ENV["CATALYST_RELEASE_KEY"]}"]
-    sha256 "1b58ef884acc9a713270a299d9d7b7298377bcdbecd87d08c1aaa11e208fdc1f"
+    sha256 "c9cf55550cd34286597c454e48c259d088947456a6227c3b90e8195de620dea8"
   else
-    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.3/cortex-darwin-x86_64.tar.gz",
+    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.4/cortex-darwin-x86_64.tar.gz",
         headers: ["x-api-key: #{ENV["CATALYST_RELEASE_KEY"]}"]
-    sha256 "d8843e647b46981eab2713407d471209caf0978d78b9c29440ee06f191825759"
+    sha256 "66f2cb6e0b4e90acfccfe9bd8d917b84de3dae66b8965e5f417ae887a55e8626"
   end
 
   def install
