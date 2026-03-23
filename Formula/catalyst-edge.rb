@@ -1,17 +1,17 @@
 class CatalystEdge < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.3/catalyst_loop-0.2.0-rc.3.tar.gz",
+  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.4/catalyst_loop-0.2.0rc4.tar.gz",
       headers: ["x-api-key: #{ENV["CATALYST_RELEASE_KEY"]}"]
-  sha256 "f81fb19fe4c3618822d0c6d34b5b8f023183ecd84476b6f005636a850eda9200"
+  sha256 "b2739b470a92fb48c7c1fad573da2362f1d9e9122e26734eb684dd4b5b5da272"
   license :cannot_represent
 
   depends_on "python@3.12"
 
   resource "cortex-client" do
-    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.3/cortex_client-0.2.0rc3.tar.gz",
+    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.4/cortex_client-0.2.0rc4.tar.gz",
         headers: ["x-api-key: #{ENV["CATALYST_RELEASE_KEY"]}"]
-    sha256 "481bdb82826707cdef00e892b9ba47247dc1b3ba25b0c9b80b841a941f7756e7"
+    sha256 "33b7813d406200d86a96560045541e664761936cd1e55d63d2c9dfd77a512ac8"
   end
 
   def install
