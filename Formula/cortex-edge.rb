@@ -1,15 +1,15 @@
 class CortexEdge < Formula
   desc "Build and run cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.11"
+  version "0.2.0-rc.12"
   license :cannot_represent
 
   if Hardware::CPU.arm?
-    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.11/cortex-darwin-arm64.tar.gz?key=eHREC9V2VGP3kzMP4OiWx92694cxgMCq8mNMFbfh6qw"
-    sha256 "daf333be92a9a34133fb46ebd8435633b763e3eb85bf36f9ea414dfc350e6d50"
+    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.12/cortex-darwin-arm64.tar.gz?key=eHREC9V2VGP3kzMP4OiWx92694cxgMCq8mNMFbfh6qw"
+    sha256 "b0430b45cf603730989773116a9bce87e6ac2ad427ad974a3338372361eccf11"
   else
-    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.11/cortex-darwin-x86_64.tar.gz?key=eHREC9V2VGP3kzMP4OiWx92694cxgMCq8mNMFbfh6qw"
-    sha256 "44dc730146623189162f1aeb51fd8b079811a9b60a902e61ab436140a1b806f7"
+    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.12/cortex-darwin-x86_64.tar.gz?key=eHREC9V2VGP3kzMP4OiWx92694cxgMCq8mNMFbfh6qw"
+    sha256 "6994d29fb68715852c57f3ece348fe7a4b9ba414e2d9b7b6a3ad712067cc0827"
   end
 
   def install
