@@ -1,26 +1,30 @@
 class CatalystEdge < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.31"
+  version "0.2.0-rc.33"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.31/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "81a52dd3f42febe788c2cc4aff2d0e455eafcd3cb610dc3d764bcc2d42ad866b"
+  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.33/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "45bfbde33e9faec5d1c8f798b9c49ff0509610afe4be1f76f2539f6eab4f16b0"
 
   depends_on "python@3.12"
 
-  # Skip Homebrew's automatic dylib relinking for Python extension modules.
-  # Pre-built wheels (cryptography, etc.) ship .so files with minimal Mach-O
-  # header space that can't be rewritten to absolute install paths.
-  # These extensions load via Python's import system, not dyld, so relinking
-  # is unnecessary.
+  # Prevent Homebrew from running install_name_tool on Python extension .so
+  # files during keg relocation. Pre-built wheels (cryptography, etc.) have
+  # minimal Mach-O headers that can't be rewritten. These load via Python's
+  # import system, not dyld, so relinking is unnecessary.
   skip_clean "libexec/lib"
 
   def install
-    libexec.install "lib"
+    # Copy lib/ via cp instead of libexec.install to prevent Homebrew from
+    # running install_name_tool on Python extension .so files. Pre-built wheels
+    # (cryptography, etc.) have minimal Mach-O headers that can't be rewritten.
+    # These load via Python's import system, not dyld, so relinking is unnecessary.
+    libexec.mkpath
+    system "cp", "-a", "lib", libexec/"lib"
     libexec.install "catalyst" => "catalyst"
     bin.install_symlink libexec/"catalyst"
   end
