@@ -1,18 +1,18 @@
 class CortexEdge < Formula
   desc "Build and run cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.81"
+  version "0.2.0-rc.86"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
   if Hardware::CPU.arm?
-    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.81/cortex-darwin-arm64.tar.gz?key=#{@@release_key}"
-    sha256 "97f76b37a36f0b71a83fc54bf375e4d8e9fe60fd9d0c2f415be85dca31b9d549"
+    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.86/cortex-darwin-arm64.tar.gz?key=#{@@release_key}"
+    sha256 "323706ed205b1407c8c86b3f2a5d2455d7c3436a89ea139a7912accabf72e86b"
   else
-    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.81/cortex-darwin-x86_64.tar.gz?key=#{@@release_key}"
-    sha256 "df0c00815c96487e87ce8c0c0825b7d331158f6c006b3b68b5f14d46b7098f01"
+    url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.86/cortex-darwin-x86_64.tar.gz?key=#{@@release_key}"
+    sha256 "e4b75ff32007c229a5ea524dfb49ff3ab12f95aa138f3c441f932d6052e8b698"
   end
 
   def install
