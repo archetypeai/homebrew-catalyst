@@ -8,7 +8,7 @@ class CatalystEdge < Formula
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
   url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.110/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "c9c8928580ed7ded44b1c15ad1115c320d61de42773f714a1b06074c0189fe73"
+  sha256 "00e009e3ace39959700cbca3782be51435609b11f4f96ec622de7fe401cfc902"
 
   depends_on "python@3.12"
 
