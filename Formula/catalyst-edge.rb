@@ -1,14 +1,14 @@
 class CatalystEdge < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.112"
+  version "0.2.0-rc.113"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.112/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "1e79e4d871ab4f6ea3f2c093941f3ab73d665ea3d3ba71c97ea8c4a6e6e0aa73"
+  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.113/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "96686060bf2bb24a3475376ee7ca7f0f47a15326d48d3363e7e61caffd344d68"
 
   depends_on "python@3.12"
 
@@ -27,14 +27,9 @@ class CatalystEdge < Formula
     system "cp", "-a", "lib", libexec/"lib"
     libexec.install "catalyst" => "catalyst"
     bin.install_symlink libexec/"catalyst"
-
-    # cortex CLI + cx alias (bundled in the same tarball)
-    bin.install "cortex" if File.exist?("cortex")
-    bin.install_symlink bin/"cortex" => "cx" if File.exist?(bin/"cortex")
   end
 
   test do
     system bin/"catalyst", "--version"
-    system bin/"cortex", "--version"
   end
 end
