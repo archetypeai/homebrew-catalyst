@@ -1,26 +1,40 @@
 class Catalyst < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  url "https://github.com/archetypeai/catalyst/releases/download/v0.1.0/catalyst_loop-0.1.0.tar.gz",
-      using: CurlDownloadStrategy
-  sha256 "a4d0a26802c9ef2a4095fd12983c8ee9f3cf310dc01588ba73d97195e136a9ac"
+  version "0.2.0"
   license :cannot_represent
+
+  @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
+    odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
+  }
+  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "5666794db47a8b66fb2b0c6623616f3e8a77914fb1470ee7f82c1dd143ee5157"
 
   depends_on "python@3.12"
 
-  resource "cortex-client" do
-    url "https://github.com/archetypeai/catalyst/releases/download/v0.1.0/cortex_client-0.1.0.tar.gz",
-        using: CurlDownloadStrategy
-    sha256 "2be1c37a92240bc08c7a6d2a5fd43ba05c5d63e79e4acfad17438829c3f61f4d"
-  end
+  # Prevent Homebrew from running install_name_tool on Python extension .so
+  # files during keg relocation. Pre-built wheels (cryptography, etc.) have
+  # minimal Mach-O headers that can't be rewritten. These load via Python's
+  # import system, not dyld, so relinking is unnecessary.
+  skip_clean "libexec/lib"
 
   def install
-    venv = virtualenv_create(libexec, "python3.12")
-    venv.pip_install resource("cortex-client")
-    venv.pip_install_and_link buildpath
+    # Copy lib/ via cp instead of libexec.install to prevent Homebrew from
+    # running install_name_tool on Python extension .so files. Pre-built wheels
+    # (cryptography, etc.) have minimal Mach-O headers that can't be rewritten.
+    # These load via Python's import system, not dyld, so relinking is unnecessary.
+    libexec.mkpath
+    system "cp", "-a", "lib", libexec/"lib"
+    libexec.install "catalyst" => "catalyst"
+    bin.install_symlink libexec/"catalyst"
+
+    # cortex CLI + cx alias (bundled in the same tarball)
+    bin.install "cortex" if File.exist?("cortex")
+    bin.install_symlink bin/"cortex" => "cx" if File.exist?(bin/"cortex")
   end
 
   test do
     system bin/"catalyst", "--version"
+    system bin/"cortex", "--version" if (bin/"cortex").exist?
   end
 end
