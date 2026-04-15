@@ -1,14 +1,14 @@
 class CatalystRc < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.146"
+  version "0.2.0-rc.148"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.146/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "305ede5ec472719cbe45e32f5dbc83b847bf24e7e744b49404a6991b55f42ff9"
+  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.148/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "9bc0f2ce1637b362ef3c53ec48f7ed38ed7a7b2321c5f45bfe548f82bd4a3da1"
 
   depends_on "python@3.12"
 
@@ -25,16 +25,16 @@ class CatalystRc < Formula
     # These load via Python's import system, not dyld, so relinking is unnecessary.
     libexec.mkpath
     system "cp", "-a", "lib", libexec/"lib"
-    libexec.install "catalyst" => "catalyst"
-    bin.install_symlink libexec/"catalyst"
+    libexec.install "catalyst" => "catalyst-rc"
+    bin.install_symlink libexec/"catalyst-rc"
 
     # cortex CLI + cx alias (bundled in the same tarball)
-    bin.install "cortex" if File.exist?("cortex")
-    bin.install_symlink bin/"cortex" => "cx" if File.exist?(bin/"cortex")
+    bin.install "cortex" => "cortex-rc" if File.exist?("cortex")
+    bin.install_symlink bin/"cortex-rc" => "cx-rc" if File.exist?(bin/"cortex-rc")
   end
 
   test do
-    system bin/"catalyst", "--version"
-    system bin/"cortex", "--version" if (bin/"cortex").exist?
+    system bin/"catalyst-rc", "--version"
+    system bin/"cortex-rc", "--version" if (bin/"cortex-rc").exist?
   end
 end
