@@ -1,14 +1,14 @@
 class CatalystRc < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.278"
+  version "0.2.0-rc.280"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.278/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "23bc8bd2ace586e888f1fb7ef319e359de4063e2977171efd538d676a044dee5"
+  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.0-rc.280/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "4384bda881e50fdff1bf5dcaf8dacae5afb56312ef35d7dc4e1158a22c16dd06"
 
   depends_on "python@3.12"
 
