@@ -1,14 +1,14 @@
 class CatalystRc < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.306"
+  version "0.2.0-rc.307"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/rc/v0.2.0-rc.306/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "687d3b037555e4c752ba2d9fb81ddef2fb0d963a412f6942fe67d2d7dd0039d2"
+  url "https://d9pwqft6ad7vm.cloudfront.net/rc/v0.2.0-rc.307/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "6759c804aef62ef9f2a81aa85a1cb7ce6fae805761cecf8815a9ef8c09e57ade"
 
   depends_on "python@3.12"
 
@@ -31,6 +31,15 @@ class CatalystRc < Formula
     # cortex CLI + cx alias (bundled in the same tarball)
     bin.install "cortex" => "cortex-rc" if File.exist?("cortex")
     bin.install_symlink bin/"cortex-rc" => "cx-rc" if File.exist?(bin/"cortex-rc")
+
+    # Copy share/ payloads into the cellar (S836 agents + S838 cortex source +
+    # node crate sources). `cortex agent init` scaffolds Makefiles whose
+    # --cortex-path / --node-path resolve to <libexec>/share/cortex/ and
+    # <libexec>/share/cortex-agents/nodes/ respectively. Bundle layout:
+    #   share/cortex/                   — framework source workspace (RC only, S838)
+    #   share/cortex-agents/nodes/      — node crate sources (RC only, S838)
+    #   share/cortex-agents/<agent>/    — pre-built agents (S836; agent install also writes here)
+    system "cp", "-a", "share", libexec/"share" if Dir.exist?("share")
   end
 
   test do
