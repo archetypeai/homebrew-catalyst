@@ -1,14 +1,14 @@
 class CatalystRc < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.0-rc.310"
+  version "0.2.0-rc.312"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/rc/v0.2.0-rc.310/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "c5152ab452e04c77d102a83214a2a152f33098bbe840a82158447202987d098d"
+  url "https://d9pwqft6ad7vm.cloudfront.net/rc/v0.2.0-rc.312/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "55aacbb5869afbe3d0255ec49dc5ec7f3383059b8c4daef9a88466ae4a0736ca"
 
   depends_on "python@3.12"
 
@@ -25,6 +25,11 @@ class CatalystRc < Formula
     # These load via Python's import system, not dyld, so relinking is unnecessary.
     libexec.mkpath
     system "cp", "-a", "lib", libexec/"lib"
+    # S836: cortex-agents bundled alongside lib/. agent_dir_resolver
+    # discovers them at $(brew --prefix)/opt/catalyst-rc/libexec/share/cortex-agents/<name>/
+    # so `brew install catalyst-rc` ships every default agent ready to run —
+    # no follow-up `catalyst-rc agent install` step.
+    system "cp", "-a", "share", libexec/"share" if File.exist?("share")
     libexec.install "catalyst" => "catalyst-rc"
     bin.install_symlink libexec/"catalyst-rc"
 
