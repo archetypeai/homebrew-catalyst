@@ -1,14 +1,14 @@
 class Catalyst < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.2.2"
+  version "0.5.0"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/v0.2.2/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "363929107d6eb9fd0f814dbf6a9db3003c25f743e7c45258d3d7a39a6459b4ed"
+  url "https://d9pwqft6ad7vm.cloudfront.net/stable/v0.5.0/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "f7e5bc23ad0a42fd56ac62c9e3eeaee9ac9a4999258e4b920e4af89923014aa0"
 
   depends_on "python@3.12"
 
@@ -25,12 +25,26 @@ class Catalyst < Formula
     # These load via Python's import system, not dyld, so relinking is unnecessary.
     libexec.mkpath
     system "cp", "-a", "lib", libexec/"lib"
+    # S836: cortex-agents bundled alongside lib/. agent_dir_resolver
+    # discovers them at $(brew --prefix)/opt/catalyst/libexec/share/cortex-agents/<name>/
+    # so `brew install catalyst` ships every default agent ready to run —
+    # no follow-up `catalyst agent install` step.
+    system "cp", "-a", "share", libexec/"share" if File.exist?("share")
     libexec.install "catalyst" => "catalyst"
     bin.install_symlink libexec/"catalyst"
 
     # cortex CLI + cx alias (bundled in the same tarball)
     bin.install "cortex" => "cortex" if File.exist?("cortex")
     bin.install_symlink bin/"cortex" => "cx" if File.exist?(bin/"cortex")
+
+    # Copy share/ payloads into the cellar (S836 agents + S838 cortex source +
+    # node crate sources). `cortex agent init` scaffolds Makefiles whose
+    # --cortex-path / --node-path resolve to <libexec>/share/cortex/ and
+    # <libexec>/share/cortex-agents/nodes/ respectively. Bundle layout:
+    #   share/cortex/                   — framework source workspace (RC only, S838)
+    #   share/cortex-agents/nodes/      — node crate sources (RC only, S838)
+    #   share/cortex-agents/<agent>/    — pre-built agents (S836; agent install also writes here)
+    system "cp", "-a", "share", libexec/"share" if Dir.exist?("share")
   end
 
   test do
