@@ -1,14 +1,14 @@
 class Catalyst < Formula
   desc "Hyperparameter optimization for cortex agents"
   homepage "https://github.com/archetypeai/catalyst"
-  version "0.5.3"
+  version "0.5.4"
   license :cannot_represent
 
   @@release_key = ENV.fetch("HOMEBREW_CATALYST_RELEASE_KEY") {
     odie "Set HOMEBREW_CATALYST_RELEASE_KEY to install. See: https://github.com/archetypeai/homebrew-catalyst#setup"
   }
-  url "https://d9pwqft6ad7vm.cloudfront.net/stable/v0.5.3/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
-  sha256 "80f832ab2d23251ff9305dbec3e3380c7a32a781b80069f20ff7f122c99fa4b6"
+  url "https://d9pwqft6ad7vm.cloudfront.net/stable/v0.5.4/catalyst-darwin-arm64.tar.gz?key=#{@@release_key}"
+  sha256 "c9b723b11837b707a7b65c82a24df26b4bf7dbc779dc947907392ac84915a1d3"
 
   depends_on "python@3.12"
 
@@ -25,26 +25,26 @@ class Catalyst < Formula
     # These load via Python's import system, not dyld, so relinking is unnecessary.
     libexec.mkpath
     system "cp", "-a", "lib", libexec/"lib"
-    # S836: cortex-agents bundled alongside lib/. agent_dir_resolver
-    # discovers them at $(brew --prefix)/opt/catalyst/libexec/share/cortex-agents/<name>/
-    # so `brew install catalyst` ships every default agent ready to run —
-    # no follow-up `catalyst agent install` step.
-    system "cp", "-a", "share", libexec/"share" if File.exist?("share")
+    # S846: single `cp -a share libexec/share` for everything that ships
+    # under the tarball's share/ tree. The duplicate copy that lived here
+    # previously created a doubled libexec/share/share/ prefix because the
+    # second `cp -a SRC DEST` lands inside DEST when DEST already exists
+    # (issue #254 Bug 1). Bundle contents (S836 + S838 both live in this
+    # one tree, this one copy):
+    #   share/cortex/                   — framework source workspace (RC only, S838)
+    #   share/cortex-agents/nodes/      — node crate sources (RC only, S838)
+    #   share/cortex-agents/<agent>/    — pre-built agents (S836; complete
+    #                                     tree with bin/, models/, values/,
+    #                                     manifest.yaml, etc.)
+    # agent_dir_resolver targets <libexec>/share/cortex-agents/<name>/ — so
+    # the canonical single-share path it expects is what gets created here.
+    system "cp", "-a", "share", libexec/"share" if Dir.exist?("share")
     libexec.install "catalyst" => "catalyst"
     bin.install_symlink libexec/"catalyst"
 
     # cortex CLI + cx alias (bundled in the same tarball)
     bin.install "cortex" => "cortex" if File.exist?("cortex")
     bin.install_symlink bin/"cortex" => "cx" if File.exist?(bin/"cortex")
-
-    # Copy share/ payloads into the cellar (S836 agents + S838 cortex source +
-    # node crate sources). `cortex agent init` scaffolds Makefiles whose
-    # --cortex-path / --node-path resolve to <libexec>/share/cortex/ and
-    # <libexec>/share/cortex-agents/nodes/ respectively. Bundle layout:
-    #   share/cortex/                   — framework source workspace (RC only, S838)
-    #   share/cortex-agents/nodes/      — node crate sources (RC only, S838)
-    #   share/cortex-agents/<agent>/    — pre-built agents (S836; agent install also writes here)
-    system "cp", "-a", "share", libexec/"share" if Dir.exist?("share")
   end
 
   test do
